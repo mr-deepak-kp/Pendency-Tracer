@@ -30,6 +30,18 @@ Manually tracking which bills are prepared, which are pending, and which are pai
 
 ---
 
+## 💼 Who can use this?
+
+This tool is built for any organization that manages billing/invoice data across multiple agencies or vendors — particularly useful for:
+
+- Organizations tracking contract-labour or manpower agency payments
+- Teams managing monthly invoice reconciliation across multiple vendors
+- Especially useful for manpower/contract-labour agencies in Bhopal working with government departments, where monthly billing and payment pendency across multiple agencies needs to be tracked.
+
+Just upload your Excel/CSV file(s) with invoice status and amount columns — the tool adapts to common header name variations automatically.
+
+---
+
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
