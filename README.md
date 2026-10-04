@@ -1,33 +1,61 @@
-# Pendency Tracing Tools (React)
+# 📊 Pendency Tracing Tools
 
-A React rewrite of the Pendency Tracing Tool — upload one or more billing
-Excel files, get instant pendency summary metrics, filter by month, and
-download a styled Excel report (filtered to the selected month, or all
-months combined).
+A free, browser-based tool to automatically analyze billing/invoice Excel data, categorize payment pendency, filter by month, and export a clean, styled summary report — no backend, no installation, no data leaves your browser.
 
-## Features
+🔗 **Live Demo:** [https://pendency-tracer.netlify.app](https://pendency-tracer.netlify.app)
 
-- **Multi-file upload** — drag & drop or browse, select several `.xlsx`/`.xls`
-  files at once; all rows are merged automatically.
-- **Auto column detection** — finds `AgencyInvoiceUploaded`,
-  `CedmapToAgencyWithoutGST`, and a Month/Date column even if the header
-  name varies slightly.
-- **Month filter** — a dropdown (auto-populated from your data) filters
-  the on-screen summary cards and table live.
-- **Styled Excel export** — the downloaded report has colored headers,
-  zebra-striped rows, and borders (via `xlsx-populate`, since the free
-  SheetJS build can't write cell styles). The download only contains the
-  currently selected month's data (or everything, if "All Months" is picked).
+---
 
-## Project structure
+## 🧩 What problem does it solve?
+
+Manually tracking which bills are prepared, which are pending, and which are paid across multiple monthly Excel sheets is slow and error-prone. This tool automates that entire process — upload your raw billing data, and get instant categorized insights.
+
+---
+
+## ✨ Features
+
+- **📂 Multi-file upload** — drag & drop or browse; upload several files at once and they're automatically merged into one dataset.
+- **📑 Flexible file formats** — accepts Excel (`.xlsx`, `.xls`, `.xlsm`, `.xlsb`), CSV, ODS (LibreOffice/OpenOffice), TSV, and more — not locked to one format.
+- **🔍 Smart column detection** — automatically finds the relevant columns (invoice status, amount, month/date) even if header names vary slightly, so it works across differently-formatted sheets.
+- **📊 Automatic pendency categorization**
+  - Bill Not Prepared
+  - Bill Prepared
+  - Bill Prepared but Payment Not Received
+  - Total Amount (auto-summed, excluding blanks/zeros)
+- **📅 Month detection & filtering** — automatically detects every month present in the uploaded data and lets you filter the entire dashboard to a single month with one click.
+- **📈 Live summary dashboard** — 6 metric cards + a detailed breakdown table, updating instantly as you change the month filter.
+- **📥 Styled Excel export** — download a multi-sheet `.xlsx` report (Summary + 3 category sheets) with colored headers, zebra-striped rows, and clean borders — matching exactly what's currently filtered on screen (single month, or all months).
+- **🔒 100% client-side** — all processing happens in your browser. No file is ever uploaded to a server, so your data stays private.
+- **📱 Responsive design** — works on desktop and mobile.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | React 19 + Vite |
+| Excel/CSV reading | [SheetJS (xlsx)](https://sheetjs.com/) |
+| Styled Excel export | [xlsx-populate](https://github.com/dtjohnson/xlsx-populate) |
+| Styling | Plain CSS (custom design system) |
+| Hosting | Netlify (CI/CD auto-deploy from GitHub) |
+
+---
+
+## 📁 Project Structure
 
 ```
 src/
-├── components/       # UploadArea, MonthFilter, SummaryCards, SummaryTable, ActionsBar
+├── components/
+│   ├── UploadArea.jsx       # drag & drop / file picker
+│   ├── MonthFilter.jsx      # month dropdown
+│   ├── SummaryCards.jsx     # 6 metric cards
+│   ├── SummaryTable.jsx     # detailed breakdown table
+│   └── ActionsBar.jsx       # file info, filter, download, reset
 ├── hooks/
-│   └── usePendencyData.js   # all app state lives here
+│   └── usePendencyData.js   # all app state & logic orchestration
 ├── utils/
-│   ├── excelReader.js       # reads uploaded files into JSON rows
+│   ├── excelReader.js       # parses uploaded files into rows
 │   ├── billingProcessor.js  # column detection + categorization logic
 │   ├── monthUtils.js        # month label parsing/sorting
 │   └── excelExporter.js     # builds the styled .xlsx download
@@ -35,61 +63,49 @@ src/
 └── App.css
 ```
 
-## Run it locally
+---
+
+## 🚀 Run Locally
 
 ```bash
+git clone https://github.com/mr-deepak-kp/Pendency-Tracer.git
+cd Pendency-Tracer
 npm install
 npm run dev
 ```
 
 Opens at `http://localhost:5173`.
 
-To build a production bundle:
-
+Build for production:
 ```bash
-npm run build      # outputs to dist/
-npm run preview    # serve the built bundle locally to double-check it
+npm run build
+npm run preview
 ```
 
-## ⚠️ One thing to fix before you rely on this long-term
+---
 
-`npm install` will show a **high severity advisory for the `xlsx` package**.
-This is a known, old issue with the version SheetJS publishes to the npm
-registry — there's no fix published there. SheetJS's own recommended fix is
-to install directly from their CDN instead:
+## 📋 Expected Input Columns
 
-```bash
-npm uninstall xlsx
-npm install https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz
-```
+The tool looks for these columns (name matching is flexible/case-insensitive):
 
-This gets you their latest patched build. No code changes needed — the
-import (`import * as XLSX from "xlsx"`) stays exactly the same.
+| Purpose | Accepted column names |
+|---|---|
+| Invoice status | `AgencyInvoiceUploaded` |
+| Amount | `AgencyWithoutGST` |
+| Month/Date | `Month`, `Bill Date`, `Invoice Date`, `Period`, etc. |
 
-## Push to GitHub
+---
 
-```bash
-git init
-git add .
-git commit -m "Initial React version of Pendency Tracing Tool"
-git branch -M main
-git remote add origin https://github.com/mr-deepak-kp/pendency-tracker-react.git
-git push -u origin main
-```
+---
 
-(Create an empty repo with this name on GitHub first.)
+## 👤 Author
 
-## Deploy
+**Deepak Kumar Prasad** 
+ | Aspiring Data Analyst |
+🔗 [GitHub](https://github.com/mr-deepak-kp)
 
-### Netlify (recommended)
-1. netlify.com → sign in with GitHub
-2. "Add new site" → "Import from GitHub" → select this repo
-3. Build command: `npm run build`
-4. Publish directory: `dist`
+---
 
-### Render
-1. render.com → New → Static Site → connect this GitHub repo
-2. Build command: `npm run build`
-3. Publish directory: `dist`
+## 📄 License
 
-Both platforms auto-redeploy on every `git push`.
+This project is open for personal/portfolio use.
